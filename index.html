@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>European Leagues Data</title>
+    <link rel="icon" type="image/x-icon" href="https://img.uefa.com/imgml/favicon/comp/ucl.ico">
     <!-- Include Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -122,7 +123,7 @@
                                 matches.sort((a, b) => new Date(a.date) - new Date(b.date));
 
                                 // Create a popup with all matches against the opponent
-                                const popupContent = `<h2>${opponent}</h2>${matches.map(match => {
+                                const popupContent = `<div style="display: flex; align-items: center;"><img src="${opponentData.logo}" alt="${opponent}" style="max-width: 50px; max-height: 50px; margin-right: 10px;"><h2>${capitalizeFirstLetter(opponent)}</h2></div>${matches.map(match => {
                                     const formattedDate = new Date(match.date).toLocaleDateString();
                                     const result = (match.winner.toLowerCase() === match.home_team_name.toLowerCase()) ?
                                         `<b>${capitalizeFirstLetter(match.home_team_name)}</b> ${match.home_team_score}-${match.away_team_score} ${capitalizeFirstLetter(match.away_team_name)}` :
