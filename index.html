@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Map</title>
+    <title>European Leagues Data</title>
     <!-- Include Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
         }
+
         #map {
             height: 100vh;
         }
+
         #search-bar {
             position: absolute;
             top: 10px;
@@ -23,10 +27,10 @@
         }
     </style>
 </head>
+
 <body>
     <div id="map"></div>
     <div id="search-bar">
-        <!-- <label for="club-select">Select a club:</label> -->
         <select id="club-select" onchange="onClubSelect(this.value)">
             <option value="default" selected disabled>Select Club</option>
         </select>
@@ -34,92 +38,111 @@
 
     <!-- Include Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
- <!-- ... (previous HTML code) ... -->
 
-<script>
-    var map = L.map('map').setView([48.2071889, 16.4205083], 5);
-    var data;  // Declare data variable
+    <script>
+        var map = L.map('map').setView([48.2071889, 16.4205083], 5);
+        var data;  // Declare data variable
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-    var markers = [];  // Array to store markers
+        var markers = [];  // Array to store markers
 
-    // Fetch clubs from the API
-    fetch('http://localhost:5000/clubs')
-        .then(response => response.json())
-        .then(apiData => {
-            data = apiData;  // Assign apiData to the data variable
-            const clubSelect = document.getElementById('club-select');
-            data.clubs.forEach(club => {
-                const option = document.createElement('option');
-                option.value = club.name;
-                option.textContent = club.name;
-                clubSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error fetching clubs:', error));
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-    function onClubSelect(clubName) {
-        // Remove existing markers
-        markers.forEach(marker => map.removeLayer(marker));
-        markers = [];
+        // Fetch clubs from the API
+        fetch('http://localhost:5000/clubs')
+            .then(response => response.json())
+            .then(apiData => {
+                data = apiData;  // Assign apiData to the data variable
+                const clubSelect = document.getElementById('club-select');
+                data.clubs.forEach(club => {
+                    const option = document.createElement('option');
+                    option.value = club.name;
+                    option.textContent = club.name;
+                    clubSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching clubs:', error));
 
-        // Get geolocation for the selected club
-        const selectedClub = data.clubs.find(club => club.name === clubName);
-
-        if (selectedClub) {
-            const { lat, long } = selectedClub.geolocation;
-
-            // Create a red marker for the selected club
-            const selectedMarker = L.marker([parseFloat(lat), parseFloat(long)], { icon: L.divIcon({ className: 'custom-marker', html: '&#x1F534;' }) }).addTo(map);
-            markers.push(selectedMarker);
-
-            // Make a request to /games/<string:name>
-            fetch(`http://localhost:5000/games/${clubName}`)
-                .then(response => response.json())
-                .then(gamesData => {
-                    // Create a map to store matches by opponent team
-                    const matchesByOpponent = new Map();
-
-                    // Group matches by opponent team
-                    gamesData.games.forEach(game => {
-                        const { date, away_team_name, home_team_name, away_team_score, home_team_score } = game;
-
-                        // Determine the opponent team
-                        const opponentTeam = (home_team_name === clubName) ? away_team_name : home_team_name;
-
-                        // Initialize the matches array for the opponent
-                        matchesByOpponent.set(opponentTeam, matchesByOpponent.get(opponentTeam) || []);
-
-                        // Add the match details to the opponent's matches array
-                        matchesByOpponent.get(opponentTeam).push(`${date} - ${capitalizeFirstLetter(home_team_name)} ${home_team_score} - ${away_team_score} ${capitalizeFirstLetter(away_team_name)}`);
-                    });
-
-                    // Display popups for each opponent with all matches
-                    for (const [opponent, matches] of matchesByOpponent.entries()) {
-                        const opponentData = data.clubs.find(club => club.name === opponent);
-
-                        if (opponentData) {  // Check if opponentData is defined
-                            const { lat, long } = opponentData.geolocation;
-
-                            // Create a popup with all matches against the opponent
-                            const popupContent = `<b>${opponent}</b><br>${matches.join('<br>')}`;
-                            const opponentMarker = L.marker([parseFloat(lat), parseFloat(long)]).addTo(map).bindPopup(popupContent);
-                            markers.push(opponentMarker);
-                        } else {
-                            console.error(`Opponent data not found for ${opponent}`);
-                        }
-                    }
-                })
-                .catch(error => console.error(`Error fetching games for ${clubName}:`, error));
-        } else {
-            console.error(`Geolocation not found for ${clubName}`);
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
-    }
-</script>
+
+        function onClubSelect(clubName) {
+            // Remove existing markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            // Get geolocation for the selected club
+            const selectedClub = data.clubs.find(club => club.name === clubName);
+
+            if (selectedClub) {
+                const { lat, long } = selectedClub.geolocation;
+
+                // Create a red marker for the selected club
+                const selectedMarker = L.marker([parseFloat(lat), parseFloat(long)], { icon: L.divIcon({ className: 'custom-marker', html: '&#x1F534;' }) }).addTo(map);
+                markers.push(selectedMarker);
+
+                // Make a request to /games/<string:name>
+                fetch(`http://localhost:5000/games/${clubName}`)
+                    .then(response => response.json())
+                    .then(gamesData => {
+                        // Create a map to store matches by opponent team
+                        const matchesByOpponent = new Map();
+
+                        // Group matches by opponent team
+                        gamesData.games.forEach(game => {
+                            const { date, away_team_name, home_team_name, away_team_score, home_team_score, winner } = game;
+
+                            // Determine the opponent team
+                            const opponentTeam = (home_team_name === clubName) ? away_team_name : home_team_name;
+
+                            // Initialize the matches array for the opponent
+                            matchesByOpponent.set(opponentTeam, matchesByOpponent.get(opponentTeam) || []);
+
+                            // Add the match details to the opponent's matches array
+                            matchesByOpponent.get(opponentTeam).push({
+                                date,
+                                home_team_name,
+                                away_team_name,
+                                home_team_score,
+                                away_team_score,
+                                winner,
+                            });
+                        });
+
+                        // Display popups for each opponent with sorted matches
+                        for (const [opponent, matches] of matchesByOpponent.entries()) {
+                            const opponentData = data.clubs.find(club => club.name === opponent);
+
+                            if (opponentData) {  // Check if opponentData is defined
+                                const { lat, long } = opponentData.geolocation;
+
+                                // Sort matches by date in ascending order
+                                matches.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                                // Create a popup with all matches against the opponent
+                                const popupContent = `<h2>${opponent}</h2>${matches.map(match => {
+                                    const formattedDate = new Date(match.date).toLocaleDateString();
+                                    const result = (match.winner.toLowerCase() === match.home_team_name.toLowerCase()) ?
+                                        `<b>${capitalizeFirstLetter(match.home_team_name)}</b> ${match.home_team_score}-${match.away_team_score} ${capitalizeFirstLetter(match.away_team_name)}` :
+                                        `${capitalizeFirstLetter(match.home_team_name)} ${match.home_team_score}-${match.away_team_score} <b>${capitalizeFirstLetter(match.away_team_name)}</b>`;
+                                    return `${formattedDate} - ${result}`;
+                                }).join('<br>')}`;
+
+                                const opponentMarker = L.marker([parseFloat(lat), parseFloat(long)]).addTo(map).bindPopup(popupContent);
+                                markers.push(opponentMarker);
+                            } else {
+                                console.error(`Opponent data not found for ${opponent}`);
+                            }
+                        }
+                    })
+                    .catch(error => console.error(`Error fetching games for ${clubName}:`, error));
+            } else {
+                console.error(`Geolocation not found for ${clubName}`);
+            }
+        }
+    </script>
 </body>
+
 </html>
