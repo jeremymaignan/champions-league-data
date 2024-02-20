@@ -1,0 +1,20 @@
+{
+    "dynamodb_host": "http://ldc-dynamo:8000",
+    "dynamodb_region": "us-west-2",
+    "dynamodb_games_table": "games",
+    "dynamodb_clubs_table": "clubs",
+    "competitions": {
+        "Champions League": {
+            "id": 1,
+            "from": 1955
+        },
+        "Europa League": {
+            "id": 14,
+            "from": 1971
+        },
+        "Europa Conference League": {
+            "id": 2019,
+            "from": 2021
+        }
+    }
+}
