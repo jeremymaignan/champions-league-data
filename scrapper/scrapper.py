@@ -23,7 +23,8 @@ def build_match_item(match):
         try:
             if match["homeTeam"]["internationalName"] not in clubs and round != "FINAL":
                 clubs[match["homeTeam"]["internationalName"]] = {
-                    "name": match["homeTeam"]["internationalName"].lower(),
+                    "id": match["homeTeam"]["id"],
+                    "name": match["homeTeam"]["internationalName"],
                     "country": match["homeTeam"]["translations"]["countryName"]["EN"],
                     "logo": match["homeTeam"]["bigLogoUrl"],
                     "geolocation": {
@@ -43,9 +44,11 @@ def build_match_item(match):
             "match_type": match["matchday"]["type"],
             "round": round,
             "winner": winner,
-            "home_team_name": match["homeTeam"]["internationalName"].lower(),
+            "home_team_name": match["homeTeam"]["internationalName"],
+            "home_team_id": match["homeTeam"]["id"],
             "home_team_score": match["score"]["regular"]["home"],
-            "away_team_name": match["awayTeam"]["internationalName"].lower(),
+            "away_team_name": match["awayTeam"]["internationalName"],
+            "away_team_id": match["awayTeam"]["id"],
             "away_team_score": match["score"]["regular"]["away"],
         }
     except Exception as err:
@@ -55,8 +58,8 @@ def scrapper(competition_name):
     games = []
     competition = get_conf("competitions")[competition_name]
 
-    for year in range(competition["from"], 2023):
-    # for year in range(2021, 2023):
+    #for year in range(competition["from"], 2023):
+    for year in range(2021, 2023):
         params["seasonYear"] = year
         params["competitionId"] = competition["id"]
         response = requests.get('https://match.uefa.com/v5/matches', params=params, headers=headers, timeout=10)

@@ -58,24 +58,20 @@
                 const clubSelect = document.getElementById('club-select');
                 data.clubs.forEach(club => {
                     const option = document.createElement('option');
-                    option.value = club.name;
+                    option.value = club.id;
                     option.textContent = club.name;
                     clubSelect.appendChild(option);
                 });
             })
             .catch(error => console.error('Error fetching clubs:', error));
 
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function onClubSelect(clubName) {
+        function onClubSelect(clubId) {
             // Remove existing markers
             markers.forEach(marker => map.removeLayer(marker));
             markers = [];
-
+            console.log('Selected club:', clubId);
             // Get geolocation for the selected club
-            const selectedClub = data.clubs.find(club => club.name === clubName);
+            const selectedClub = data.clubs.find(club => club.id === clubId);
 
             if (selectedClub) {
                 const { lat, long } = selectedClub.geolocation;
@@ -85,7 +81,7 @@
                 markers.push(selectedMarker);
 
                 // Make a request to /games/<string:name>
-                fetch(`http://localhost:5000/games/${clubName}`)
+                fetch(`http://localhost:5000/games/${clubId}`)
                     .then(response => response.json())
                     .then(gamesData => {
                         // Create a map to store matches by opponent team
@@ -93,10 +89,9 @@
 
                         // Group matches by opponent team
                         gamesData.games.forEach(game => {
-                            const { date, away_team_name, home_team_name, away_team_score, home_team_score, winner } = game;
-
+                            const { date, away_team_name, away_team_id, away_team_score, home_team_name, home_team_id, home_team_score, winner } = game;
                             // Determine the opponent team
-                            const opponentTeam = (home_team_name === clubName) ? away_team_name : home_team_name;
+                            const opponentTeam = (home_team_id === clubId) ? away_team_id : home_team_id;
 
                             // Initialize the matches array for the opponent
                             matchesByOpponent.set(opponentTeam, matchesByOpponent.get(opponentTeam) || []);
@@ -106,6 +101,8 @@
                                 date,
                                 home_team_name,
                                 away_team_name,
+                                home_team_id,
+                                away_team_id,
                                 home_team_score,
                                 away_team_score,
                                 winner,
@@ -114,20 +111,18 @@
 
                         // Display popups for each opponent with sorted matches
                         for (const [opponent, matches] of matchesByOpponent.entries()) {
-                            const opponentData = data.clubs.find(club => club.name === opponent);
+                            const opponentData = data.clubs.find(club => club.id === opponent);
 
                             if (opponentData) {  // Check if opponentData is defined
                                 const { lat, long } = opponentData.geolocation;
-
                                 // Sort matches by date in ascending order
                                 matches.sort((a, b) => new Date(a.date) - new Date(b.date));
-
                                 // Create a popup with all matches against the opponent
-                                const popupContent = `<div style="display: flex; align-items: center;"><img src="${opponentData.logo}" alt="${opponent}" style="max-width: 50px; max-height: 50px; margin-right: 10px;"><h2>${capitalizeFirstLetter(opponent)}</h2></div>${matches.map(match => {
+                                const popupContent = `<div style="display: flex; align-items: center;"><img src="${opponentData.logo}" alt="${opponent}" style="max-width: 50px; max-height: 50px; margin-right: 10px;"><h2>${opponentData.name}</h2></div>${matches.map(match => {
                                     const formattedDate = new Date(match.date).toLocaleDateString();
                                     const result = (match.winner.toLowerCase() === match.home_team_name.toLowerCase()) ?
-                                        `<b>${capitalizeFirstLetter(match.home_team_name)}</b> ${match.home_team_score}-${match.away_team_score} ${capitalizeFirstLetter(match.away_team_name)}` :
-                                        `${capitalizeFirstLetter(match.home_team_name)} ${match.home_team_score}-${match.away_team_score} <b>${capitalizeFirstLetter(match.away_team_name)}</b>`;
+                                        `<b>${match.home_team_name}</b> ${match.home_team_score}-${match.away_team_score} ${match.away_team_name}` :
+                                        `${match.home_team_name} ${match.home_team_score}-${match.away_team_score} <b>${match.away_team_name}</b>`;
                                     return `${formattedDate} - ${result}`;
                                 }).join('<br>')}`;
 
@@ -138,9 +133,9 @@
                             }
                         }
                     })
-                    .catch(error => console.error(`Error fetching games for ${clubName}:`, error));
+                    .catch(error => console.error(`Error fetching games for ${clubId}:`, error));
             } else {
-                console.error(`Geolocation not found for ${clubName}`);
+                console.error(`Geolocation not found for ${clubId}`);
             }
         }
     </script>

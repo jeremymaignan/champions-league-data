@@ -16,15 +16,15 @@ if [ $? -ne 0 ]; then
         --region $REGION \
         --table-name $GAMES_TABLE_NAME \
         --attribute-definitions \
-            AttributeName=home_team_name,AttributeType=S \
-            AttributeName=away_team_name,AttributeType=S \
+            AttributeName=home_team_id,AttributeType=S \
+            AttributeName=away_team_id,AttributeType=S \
             AttributeName=date,AttributeType=S \
         --key-schema \
-            AttributeName=home_team_name,KeyType=HASH \
+            AttributeName=home_team_id,KeyType=HASH \
             AttributeName=date,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --global-secondary-indexes \
-            IndexName=AwayTeamDateIndex,KeySchema=["{AttributeName=away_team_name,KeyType=HASH}","{AttributeName=date,KeyType=RANGE}"],Projection="{ProjectionType=ALL}",ProvisionedThroughput="{ReadCapacityUnits=5,WriteCapacityUnits=5}" \
+            IndexName=AwayTeamIndex,KeySchema=["{AttributeName=away_team_id,KeyType=HASH}","{AttributeName=date,KeyType=RANGE}"],Projection="{ProjectionType=ALL}",ProvisionedThroughput="{ReadCapacityUnits=5,WriteCapacityUnits=5}" \
         --endpoint-url $DYNAMO_ENDPOINT
     echo "DynamoDB table $GAMES_TABLE_NAME created."
 else
@@ -39,9 +39,9 @@ if [ $? -ne 0 ]; then
         --region $REGION \
         --table-name $CLUBS_TABLE_NAME \
         --attribute-definitions \
-            AttributeName=name,AttributeType=S \
+            AttributeName=id,AttributeType=S \
         --key-schema \
-            AttributeName=name,KeyType=HASH \
+            AttributeName=id,KeyType=HASH \
         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
         --endpoint-url $DYNAMO_ENDPOINT
     echo "DynamoDB table $CLUBS_TABLE_NAME created."
