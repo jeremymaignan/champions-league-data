@@ -26,20 +26,20 @@ def get_clubs():
     c = fetch_clubs().values()
     return jsonify({'clubs': list(c)})
 
-@app.route('/games/<string:id>', methods=['GET'])
-def get_games(id):
-    print("Getting games for {}".format(id))
+@app.route('/matches/<string:id>', methods=['GET'])
+def get_matches(id):
+    print("Getting matches for {}".format(id))
 
-    # Query home team games
-    home_team_games = db.query_items(
-        'games',
+    # Query home team matches
+    home_team_matches = db.query_items(
+        'matches',
         'home_team_id = :id',
         {':id': id}
     )
 
-    # Query away team games using the secondary index
-    away_team_games = db.query_items(
-        'games',
+    # Query away team matches using the secondary index
+    away_team_matches = db.query_items(
+        'matches',
         'away_team_id = :id',
         {':id': id},
         'AwayTeamIndex'
@@ -47,12 +47,12 @@ def get_games(id):
 
     # Add locations to clubs
     clubs_data = fetch_clubs()
-    for item in home_team_games + away_team_games:
+    for item in home_team_matches + away_team_matches:
         item["home_team"] = clubs_data.get(item["home_team_id"])
         item["away_team"] = clubs_data.get(item["away_team_id"])
 
-    print("Found {} home games and {} away games".format(len(home_team_games), len(away_team_games)))
-    return jsonify({'games': home_team_games + away_team_games})
+    print("Found {} home matches and {} away matches".format(len(home_team_matches), len(away_team_matches)))
+    return jsonify({'matches': home_team_matches + away_team_matches})
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

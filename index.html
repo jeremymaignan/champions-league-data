@@ -80,16 +80,16 @@
                 const selectedMarker = L.marker([parseFloat(lat), parseFloat(long)], { icon: L.divIcon({ className: 'custom-marker', html: '&#x1F534;' }) }).addTo(map);
                 markers.push(selectedMarker);
 
-                // Make a request to /games/<string:name>
-                fetch(`http://localhost:5000/games/${clubId}`)
+                // Make a request to /matches/<string:name>
+                fetch(`http://localhost:5000/matches/${clubId}`)
                     .then(response => response.json())
-                    .then(gamesData => {
+                    .then(matchesData => {
                         // Create a map to store matches by opponent team
                         const matchesByOpponent = new Map();
 
                         // Group matches by opponent team
-                        gamesData.games.forEach(game => {
-                            const { date, away_team_name, away_team_id, away_team_score, home_team_name, home_team_id, home_team_score, winner } = game;
+                        matchesData.matches.forEach(match => {
+                            const { date, away_team_name, away_team_id, away_team_score, home_team_name, home_team_id, home_team_score, winner } = match;
                             // Determine the opponent team
                             const opponentTeam = (home_team_id === clubId) ? away_team_id : home_team_id;
 
@@ -133,7 +133,7 @@
                             }
                         }
                     })
-                    .catch(error => console.error(`Error fetching games for ${clubId}:`, error));
+                    .catch(error => console.error(`Error fetching matches for ${clubId}:`, error));
             } else {
                 console.error(`Geolocation not found for ${clubId}`);
             }

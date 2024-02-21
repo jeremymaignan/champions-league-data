@@ -5,7 +5,7 @@ class DynamoDB:
         self.client = boto3.resource('dynamodb', endpoint_url="http://0.0.0.0:8000", region_name="us-west-2")
         self.tables = {
             "clubs": self.client.Table("clubs"),
-            "games": self.client.Table("games")
+            "matches": self.client.Table("matches")
         }
 
     def query_items(self, table, key_condition_expression, expression_attribute_values, index_name=None):

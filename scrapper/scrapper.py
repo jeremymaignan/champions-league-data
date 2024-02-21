@@ -62,7 +62,7 @@ def build_match_item(match):
         print("Error {}".format(err))
 
 def scrapper(competition_name):
-    games = []
+    matches = []
     competition = get_conf("competitions")[competition_name]
 
     for year in range(competition["from"], 2023):
@@ -76,7 +76,7 @@ def scrapper(competition_name):
         for match in response.json():
             d = build_match_item(match)
             if d:
-               games.append(d)
-        print("Year {} has {} games for competition {}".format(year, len(games), competition_name))
+               matches.append(d)
+        print("Year {} has {} matches for competition {}".format(year, len(matches), competition_name))
     print("Total clubs {}".format(len(clubs)))
-    return games, clubs.values()
+    return matches, clubs.values()

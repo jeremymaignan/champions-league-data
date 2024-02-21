@@ -5,7 +5,7 @@ class Dynamodb():
     def __init__(self, url, region):
         db = boto3.resource('dynamodb', endpoint_url=url, region_name=region)
         self.tables = {
-            "games": db.Table(get_conf("dynamodb_games_table")),
+            "matches": db.Table(get_conf("dynamodb_matches_table")),
             "clubs": db.Table(get_conf("dynamodb_clubs_table"))
         }
 

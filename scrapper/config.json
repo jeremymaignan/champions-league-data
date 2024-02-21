@@ -1,7 +1,7 @@
 {
     "dynamodb_host": "http://ldc-dynamo:8000",
     "dynamodb_region": "us-west-2",
-    "dynamodb_games_table": "games",
+    "dynamodb_matches_table": "matches",
     "dynamodb_clubs_table": "clubs",
     "competitions": {
         "Champions League": {

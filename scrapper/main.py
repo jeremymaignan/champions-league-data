@@ -11,11 +11,11 @@ def main():
     # Scrap data
     for competition in get_conf("competitions").keys():
         print("Scraping {}".format(competition))
-        games, clubs = scrapper(competition)
-        print("{} games to insert".format(len(games)))
+        matches, clubs = scrapper(competition)
+        print("{} matches to insert".format(len(matches)))
 
         # Insert data into DynamoDB
-        db.batch_insert(games, "games")
+        db.batch_insert(matches, "matches")
         db.batch_insert(clubs, "clubs")
 
 if __name__ == "__main__":
