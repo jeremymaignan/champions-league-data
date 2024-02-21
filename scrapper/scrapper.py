@@ -38,6 +38,12 @@ def build_match_item(match):
             winner = match["winner"]["match"]["team"]["internationalName"]
         except:
             winner = "Draw"
+        try:
+            home_team_score = match["score"]["regular"]["home"]
+            away_team_score = match["score"]["regular"]["away"]
+        except:
+            home_team_score = "-1"
+            away_team_score = "-1"
         return {
             "date": match["kickOffTime"]["date"],
             "competition": competition,
@@ -46,10 +52,11 @@ def build_match_item(match):
             "winner": winner,
             "home_team_name": match["homeTeam"]["internationalName"],
             "home_team_id": match["homeTeam"]["id"],
-            "home_team_score": match["score"]["regular"]["home"],
+            "home_team_score": home_team_score,
             "away_team_name": match["awayTeam"]["internationalName"],
             "away_team_id": match["awayTeam"]["id"],
-            "away_team_score": match["score"]["regular"]["away"],
+            "away_team_score": away_team_score,
+            "status": match["status"],
         }
     except Exception as err:
         print("Error {}".format(err))
@@ -58,8 +65,8 @@ def scrapper(competition_name):
     games = []
     competition = get_conf("competitions")[competition_name]
 
-    #for year in range(competition["from"], 2023):
-    for year in range(2021, 2023):
+    for year in range(competition["from"], 2023):
+    # for year in range(2021, 2023):
         params["seasonYear"] = year
         params["competitionId"] = competition["id"]
         response = requests.get('https://match.uefa.com/v5/matches', params=params, headers=headers, timeout=10)
