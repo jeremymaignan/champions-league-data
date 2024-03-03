@@ -53,7 +53,6 @@ function onClubSelect(clubId) {
         fetch(`http://localhost:5000/matches/${clubId}`)
             .then(response => response.json())
             .then(matchesData => {
-                console.log('Get matches data');
                 // Create a map to store matches by opponent team
                 const matchesByOpponent = new Map();
 
