@@ -2,7 +2,7 @@ import boto3
 
 class DynamoDB:
     def __init__(self):
-        self.client = boto3.resource('dynamodb', endpoint_url="http://0.0.0.0:8000", region_name="us-west-2")
+        self.client = boto3.resource('dynamodb', endpoint_url="http://ldc-dynamo:8000", region_name="us-west-2")
         self.tables = {
             "clubs": self.client.Table("clubs"),
             "matches": self.client.Table("matches")

@@ -21,17 +21,26 @@ def build_match_item(match):
         competition =  match["competition"]["metaData"]["name"]
         round = match["round"]["metaData"]["type"]
         try:
-            if match["homeTeam"]["internationalName"] not in clubs and round != "FINAL":
-                clubs[match["homeTeam"]["internationalName"]] = {
-                    "id": match["homeTeam"]["id"],
-                    "name": match["homeTeam"]["internationalName"],
-                    "country": match["homeTeam"]["translations"]["countryName"]["EN"],
-                    "logo": match["homeTeam"]["bigLogoUrl"],
-                    "geolocation": {
-                        "lat": str(match["stadium"]["geolocation"]["latitude"]),
-                        "long": str(match["stadium"]["geolocation"]["longitude"])
+            if round != "FINAL":
+                if match["homeTeam"]["internationalName"] not in clubs or len(clubs[match["homeTeam"]["internationalName"]]["geolocation"]) == 0:
+                    clubs[match["homeTeam"]["internationalName"]] = {
+                        "id": match["homeTeam"]["id"],
+                        "name": match["homeTeam"]["internationalName"],
+                        "country": match["homeTeam"]["translations"]["countryName"]["EN"],
+                        "logo": match["homeTeam"]["bigLogoUrl"],
+                        "geolocation": {
+                            "lat": str(match["stadium"]["geolocation"]["latitude"]),
+                            "long": str(match["stadium"]["geolocation"]["longitude"])
+                        }
                     }
-                }
+                if match["awayTeam"]["internationalName"] not in clubs:
+                    clubs[match["awayTeam"]["internationalName"]] = {
+                        "id": match["awayTeam"]["id"],
+                        "name": match["awayTeam"]["internationalName"],
+                        "country": match["awayTeam"]["translations"]["countryName"]["EN"],
+                        "logo": match["awayTeam"]["bigLogoUrl"],
+                        "geolocation": {}
+                    }
         except:
             pass
         try:

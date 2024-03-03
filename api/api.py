@@ -21,6 +21,10 @@ def fetch_clubs():
     clubs = {item['id']: item for item in sorted_list}
     return clubs
 
+@app.route('/health', methods=['GET'])
+def heathcheck():
+    return jsonify({'hello': "world"})
+
 @app.route('/clubs', methods=['GET'])
 def get_clubs():
     c = fetch_clubs().values()
@@ -55,4 +59,4 @@ def get_matches(id):
     return jsonify({'matches': home_team_matches + away_team_matches})
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5000, host="0.0.0.0", debug=True)
