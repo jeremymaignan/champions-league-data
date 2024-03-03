@@ -22,7 +22,7 @@ def build_match_item(match):
         round = match["round"]["metaData"]["type"]
         try:
             if round != "FINAL":
-                if match["homeTeam"]["internationalName"] not in clubs or len(clubs[match["homeTeam"]["internationalName"]]["geolocation"]) == 0:
+                if match["homeTeam"]["id"] not in clubs or len(clubs[match["homeTeam"]["id"]]["geolocation"]) == 0:
                     clubs[match["homeTeam"]["internationalName"]] = {
                         "id": match["homeTeam"]["id"],
                         "name": match["homeTeam"]["internationalName"],
@@ -33,7 +33,7 @@ def build_match_item(match):
                             "long": str(match["stadium"]["geolocation"]["longitude"])
                         }
                     }
-                if match["awayTeam"]["internationalName"] not in clubs:
+                if match["awayTeam"]["id"] not in clubs:
                     clubs[match["awayTeam"]["internationalName"]] = {
                         "id": match["awayTeam"]["id"],
                         "name": match["awayTeam"]["internationalName"],
