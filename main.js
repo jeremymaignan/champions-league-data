@@ -49,6 +49,27 @@ function onClubSelect(clubId) {
         const selectedMarker = L.marker([parseFloat(lat), parseFloat(long)], { icon: L.divIcon({ className: 'custom-marker', html: '&#x1F534;' }) }).addTo(map);
         markers.push(selectedMarker);
 
+        // Update the club information section
+        const clubInfoSection = document.getElementById('club-info');
+        clubInfoSection.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; padding: 10px; width: 300px;">
+                <img src="${selectedClub.logo}" style="max-width: 100px; max-height: 100px;">
+                <br>
+                <h2 style="text-align: center;">${selectedClub.name}</h2>
+                <p style="text-align: center">
+                    <b>Country:</b> ${selectedClub.country} <br>
+                    <b>City:</b> ${selectedClub.city}<br>
+                    <b>Stadium:</b> ${selectedClub.stadium}<br>
+                    <b>Capacity:</b> ${selectedClub.capacity}
+                </p>
+                <p style="text-align: center">
+                    <b>Champions League:</b> (${selectedClub.competitions["UEFA Champions League"].length}) ${selectedClub.competitions["UEFA Champions League"].join(', ')}<br>
+                    <b>Europa League:</b> (${selectedClub.competitions["UEFA Europa League"].length}) ${selectedClub.competitions["UEFA Europa League"].join(', ')}<br>
+                    <b>Europa Conference League:</b> (${selectedClub.competitions["UEFA Europa Conference League"].length}) ${selectedClub.competitions["UEFA Europa Conference League"].join(', ')}
+                </p>
+            </div>
+        `;
+
         // Make a request to /matches/<string:name>
         fetch(`http://localhost:5000/matches/${clubId}`)
             .then(response => response.json())

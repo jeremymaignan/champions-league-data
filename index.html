@@ -14,6 +14,7 @@
         html {
             margin: 0;
             padding: 0;
+            font-family: 'Open Sans', sans-serif;
         }
 
         #map {
@@ -32,6 +33,17 @@
             text-decoration: underline;
             cursor: pointer;
         }
+
+        #club-info {
+            height: 94vh;
+            position: absolute;
+            top: 3%;
+            bottom: 3%;
+            right: 10px;
+            z-index: 1000;
+            background-color: white;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -41,6 +53,10 @@
         <select id="club-select" onchange="onClubSelect(this.value)">
             <option value="default" selected disabled>Select Club</option>
         </select>
+    </div>
+
+    <div id="club-info">
+        <!-- Club information will be displayed here -->
     </div>
 
     <!-- Include Leaflet JavaScript -->
