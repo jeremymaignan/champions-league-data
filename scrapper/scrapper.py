@@ -48,7 +48,7 @@ def build_match_item(match, year, clubs):
             print("Club building error: {}".format(err))
 
         try:
-            winner = match["winner"]["match"]["team"]["internationalName"]
+            winner = match["winner"]["match"]["team"]["id"]
         except:
             winner = "Draw"
         try:

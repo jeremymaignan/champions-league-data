@@ -51,9 +51,31 @@ def get_matches(id):
 
     # Add locations to clubs
     clubs_data = fetch_clubs()
+    results = {}
     for item in home_team_matches + away_team_matches:
         item["home_team"] = clubs_data.get(item["home_team_id"])
         item["away_team"] = clubs_data.get(item["away_team_id"])
+        if id == item["home_team_id"]:
+            opponent_id = item["away_team_id"]
+        else:
+            opponent_id = item["home_team_id"]
+        if opponent_id not in results:
+            results[opponent_id] = {
+                "win": 0,
+                "draw": 0,
+                "loss": 0
+            }
+        if item["winner"] == id:
+            results[opponent_id]["win"] += 1
+        elif item["winner"] == "Draw":
+            results[opponent_id]["draw"] += 1
+        else:
+            results[opponent_id]["loss"] += 1
+    for item in home_team_matches + away_team_matches:
+        if id == item["home_team_id"]:
+            item["results"] = results[item["away_team_id"]]
+        else:
+            item["results"] = results[item["home_team_id"]]
 
     print("Found {} home matches and {} away matches".format(len(home_team_matches), len(away_team_matches)))
     return jsonify({'matches': home_team_matches + away_team_matches})

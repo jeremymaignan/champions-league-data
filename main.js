@@ -52,8 +52,8 @@ function onClubSelect(clubId) {
         // Update the club information section
         const clubInfoSection = document.getElementById('club-info');
         clubInfoSection.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; padding: 10px; width: 300px;">
-                <img src="${selectedClub.logo}" style="max-width: 100px; max-height: 100px;">
+            <div style="display: flex; flex-direction: column; align-items: center; padding: 10px; padding-top: 30px; width: 300px;">
+                <img src="${selectedClub.logo}" style="max-width: 150px; max-height: 150px;">
                 <br>
                 <h2 style="text-align: center;">${selectedClub.name}</h2>
                 <p style="text-align: center">
@@ -79,7 +79,7 @@ function onClubSelect(clubId) {
 
                 // Group matches by opponent team
                 matchesData.matches.forEach(match => {
-                    const { date, away_team_name, away_team_id, away_team_score, home_team_name, home_team_id, home_team_score, winner } = match;
+                    const { date, away_team_name, away_team_id, away_team_score, home_team_name, home_team_id, home_team_score, winner, results } = match;
                     // Determine the opponent team
                     const opponentTeam = (home_team_id === clubId) ? away_team_id : home_team_id;
 
@@ -96,6 +96,7 @@ function onClubSelect(clubId) {
                         home_team_score,
                         away_team_score,
                         winner,
+                        results
                     });
                 });
 
@@ -111,17 +112,24 @@ function onClubSelect(clubId) {
                         }
                         // Sort matches by date in ascending order
                         matches.sort((a, b) => new Date(a.date) - new Date(b.date));
-                
+
                         // Create a popup with all matches against the opponent
-                        const popupContent = `<div style="display: flex; align-items: center;">
-                                                <img src="${opponentData.logo}" alt="${opponent}" style="max-width: 50px; max-height: 50px; margin-right: 10px;">
-                                                <h2 class="opponent-name" data-clubid="${opponent}">${opponentData.name}</h2>
+                        const popupContent = `<div style="display: flex; flex-direction: column;">
+                                                <div style="display: flex; align-items: center;">
+                                                    <img src="${opponentData.logo}" alt="${opponent}" style="max-width: 50px; max-height: 50px; margin-right: 10px;">
+                                                    <h2 class="opponent-name" data-clubid="${opponent}">${opponentData.name}</h2>
+                                                </div>
+                                                <div style="display: flex; justify-content: center; font-size: 12px; margin-bottom: 10px; font-weight: bold;">
+                                                    <span style="color: green; margin-right: 8px;">W${matches[0].results.win}</span>-
+                                                    <span style="color: orange; margin-right: 8px; margin-left: 8px;"> D${matches[0].results.draw}</span>-
+                                                    <span style="color: red; margin-left: 8px;">L${matches[0].results.loss}</span>
+                                                </div>
                                             </div>${matches.map(match => {
                             const formattedDate = new Date(match.date).toLocaleDateString();
                             if (match.winner.toLowerCase() === 'draw') {
                                 return `${formattedDate} - ${match.home_team_name} ${match.home_team_score}-${match.away_team_score} ${match.away_team_name}`;
                             }
-                            const result = (match.winner.toLowerCase() === match.home_team_name.toLowerCase()) ?
+                            const result = (match.winner === match.home_team_id) ?
                                 `<b>${match.home_team_name}</b> ${match.home_team_score}-${match.away_team_score} ${match.away_team_name}` :
                                 `${match.home_team_name} ${match.home_team_score}-${match.away_team_score} <b>${match.away_team_name}</b>`;
                             return `${formattedDate} - ${result}`;
