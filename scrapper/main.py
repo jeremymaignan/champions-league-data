@@ -1,17 +1,38 @@
-from dynamodb import Dynamodb
+from dynamodb import DynamoDB
 from scrapper import scrapper
-from utils import get_conf
+import os
+from dotenv import load_dotenv
+
+competitions = {
+    "Champions League": {
+        "id": 1,
+        "from": 1955,
+        "name": "Champions League"
+    },
+    "Europa League": {
+        "id": 14,
+        "from": 1971,
+        "name": "Europa League"
+    },
+    "Europa Conference League": {
+        "id": 2019,
+        "from": 2021,
+        "name": "Europa Conference League"
+    }
+}
 
 def main():
-    db = Dynamodb(
-        url=get_conf("dynamodb_host"),
-        region=get_conf("dynamodb_region")
+    load_dotenv()
+
+    db = DynamoDB(
+        url=os.getenv("DYNAMODB_HOST"),
+        region=os.getenv("DYNAMODB_REGION")
     )
 
     clubs = {}
     # Scrap data
-    for competition in get_conf("competitions").keys():
-        print("Scraping {}".format(competition))
+    for name, competition in competitions.items():
+        print("Scraping {}".format(name))
         matches, clubs = scrapper(competition, clubs)
 
         # Insert data into DynamoDB

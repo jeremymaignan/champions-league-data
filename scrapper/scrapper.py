@@ -1,5 +1,4 @@
 import requests
-from utils import get_conf
 
 headers = {
     'Accept': 'application/json, text/plain, */*',
@@ -74,9 +73,8 @@ def build_match_item(match, year, clubs):
     except Exception as err:
         print("Error {}".format(err))
 
-def scrapper(competition_name, clubs):
+def scrapper(competition, clubs):
     matches = []
-    competition = get_conf("competitions")[competition_name]
 
     for year in range(competition["from"], 2023):
     # for year in range(2000, 2024):
@@ -90,6 +88,6 @@ def scrapper(competition_name, clubs):
             d = build_match_item(match, year, clubs)
             if d:
                matches.append(d)
-        print("Year {} has {} matches for competition {}".format(year, len(matches), competition_name))
+        print("Year {} has {} matches for competition {}".format(year, len(matches), competition["name"]))
     print("Total clubs {}".format(len(clubs)))
     return matches, clubs

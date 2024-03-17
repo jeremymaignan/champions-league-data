@@ -1,3 +1,4 @@
 requests==2.29.0
 awscli==1.31.13
 boto3==1.33.13
+python-dotenv==0.21.1

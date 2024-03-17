@@ -1,11 +1,15 @@
 import boto3
 
 class DynamoDB:
-    def __init__(self):
-        self.client = boto3.resource('dynamodb', endpoint_url="http://ldc-dynamo:8000", region_name="us-west-2")
+    def __init__(self, url, region):
+        client = boto3.resource(
+            'dynamodb',
+            endpoint_url=url,
+            region_name=region
+        )
         self.tables = {
-            "clubs": self.client.Table("clubs"),
-            "matches": self.client.Table("matches")
+            "matches": client.Table("matches"),
+            "clubs": client.Table("clubs")
         }
 
     def query_items(self, table, key_condition_expression, expression_attribute_values, index_name=None):

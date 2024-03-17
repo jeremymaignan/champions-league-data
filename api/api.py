@@ -1,13 +1,20 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dynamodb import DynamoDB
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 clubs = {}
 
-db = DynamoDB()
+load_dotenv()
+
+db = DynamoDB(
+    url=os.getenv("DYNAMODB_HOST"),
+    region=os.getenv("DYNAMODB_REGION")
+)
 
 def fetch_clubs():
     global clubs
