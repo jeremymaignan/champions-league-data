@@ -1,9 +1,17 @@
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://shields.io/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://shields.io/)
+[![Python](https://img.shields.io/badge/python-3.7-yellow.svg)](https://shields.io/)
+
 # Champions League Data
 
 ## Overview
 
 The Champions League Data project provides a way to visualize the results of European football matches on a map.
+
 It allows users to view the history for a given football team in Champions League, Europa League and Europa Conference League.
+
+![Screenshot](https://github.com/jeremymaignan/champions-league-data/blob/main/screenshot_srfc.png)
 
 ## Architecture
 
@@ -23,11 +31,11 @@ The front-end is a simple HTML file (`index.html`) with an accompanying JavaScri
 
 ### Instructions 
 
-1. Start Docker Compose
+#### 1. Start Docker Compose
 
-'''sh
+```sh
 docker-compose up --build -d
-'''
+```
 
 This will:
 - Initialize the database with the appropriate tables.
@@ -35,5 +43,5 @@ This will:
 - Launch the DynamoDB UI at http://localhost:8001, where you can view and manage the data.
 - Start the API service, available at http://localhost:8000.
 
-2. Access the Front-End
+#### 2. Access the Front-End
 Once the Docker containers are running, open `index.html` in your web browser. You can now search for your favorite football team's data and view it on the map.
